@@ -76,29 +76,7 @@ pyenv activate acciona-streaming
 pip install google-cloud-pubsub 
 ```
 
-### 3) Create dataflow streaming pipeline (with Terraform)
-```
-module "dataflow-job" {
-  source  = "terraform-google-modules/dataflow/google"
-  project_id  = module.main_project.project_id
-  name = "shipment-streaming"
-  on_delete = "cancel"
-  region = var.region
-  zone = "${var.region}-a"
-  max_workers = 2
-  template_gcs_path =  "gs://dataflow-templates-europe-west3/latest/PubSub_to_BigQuery"
-  temp_gcs_location = "whejna-acciona-raw-files-area/tmb_dataflow"
-  network_self_link     = module.default_vpc.self_link
-  subnetwork_self_link  = module.default_vpc.subnet_self_links["${var.region}/default"]
-  ip_configuration = "WORKER_IP_PRIVATE"
-  parameters = {
-    inputTopic="projects/whejna-acciona-sandbox/topics/streaming_data_inbound"
-    outputTableSpec="whejna-acciona-sandbox:raw_area.sensor_data_streaming"
-  }
-}
-```
-
-### 4) Publish data using the script
+### 3) Publish data using the script
 ```
 ./simulate_streaming_data.py --project whejna-acciona-sandbox --speedFactor=60
 ```
