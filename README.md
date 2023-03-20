@@ -81,7 +81,7 @@ pip install google-cloud-pubsub
 ./simulate_streaming_data.py --project whejna-acciona-sandbox --speedFactor=60
 ```
 
-### 5) See the result using the Dashboard
+### 4) See the result using the Dashboard
 Example dashboard: 
 https://datastudio.google.com/c/u/0/reporting/24898ed5-37e9-4983-8abb-4e13a4e6c607/page/tEnnC
 
