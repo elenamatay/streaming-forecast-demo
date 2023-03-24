@@ -1,0 +1,8 @@
+folder_id                    = "folders/123456789012"
+project_name                 = "my_project"
+pubsub_topic_name            = "streaming_data_inbound"
+bigquery_dataset_id          = "raw_area"
+bigquery_dataset_name        = "Raw Area"
+bigquery_dataset_description = "Raw Area"
+bigquery_table_id            = "sensors_data"
+bigquery_table_schema_file   = "../data/schema.json"

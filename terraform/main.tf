@@ -1,9 +1,9 @@
 module "main_project" {
-  source          = "github.com/GoogleCloudPlatform/cloud-foundation-fabric/modules/project"
-  parent          = google_folder.scenario1.name
-  name            = "testing-elena" # param
+  source = "github.com/GoogleCloudPlatform/cloud-foundation-fabric/modules/project"
+  parent = var.folder_id
+  name   = var.project_name
 
-  services        = [
+  services = [
     "bigquery.googleapis.com",
     "storage.googleapis.com",
     "datafusion.googleapis.com",
@@ -20,7 +20,8 @@ module "main_project" {
 module "pubsub" {
   source     = "github.com/GoogleCloudPlatform/cloud-foundation-fabric/modules/pubsub"
   project_id = module.main_project.project_id
-  name       = "streaming_data_inbound"
+  name       = var.pubsub_topic_name
+
   subscriptions = {
     streaming_data_inbound_subscription = {
       labels = { env = "dev" }
@@ -36,59 +37,60 @@ module "pubsub" {
 }
 
 module "bigquery" {
-  source  = "terraform-google-modules/bigquery/google"
+  source = "github.com/GoogleCloudPlatform/cloud-foundation-fabric/modules/bigquery-dataset"
 
-  dataset_id                  = "raw_area"
-  dataset_name                = "Rawe Area"
-  description                 = "Raw Area"
-  project_id                  = module.main_project.project_id
+  dataset_id   = var.bigquery_dataset_id
+  dataset_name = var.bigquery_dataset_name
+  description  = var.bigquery_dataset_description
+  project_id   = module.main_project.project_id
+
   tables = [
-  {
-    table_id           = "sales",
-    schema             =  file("./data/bq_sales_schema.json")
-    time_partitioning = null
-    range_partitioning = null
-    expiration_time = null
-    clustering = []
-    labels          = {
-      env      = "dev"
-    },
-  }
+    {
+      table_id           = var.bigquery_table_id
+      schema             = file(var.bigquery_table_schema_file)
+      time_partitioning  = null
+      range_partitioning = null
+      expiration_time    = null
+      clustering         = []
+      labels = {
+        env = "dev"
+      },
+    }
   ]
 }
 
-resource "google_bigquery_table" "shipment_streaming" {
-  project = module.main_project.project_id
-  dataset_id = module.bigquery.bigquery_dataset.dataset_id
-  table_id   = "shipment_streaming"
+# resource "google_bigquery_table" "shipment_streaming" {
+#   project    = module.main_project.project_id
+#   dataset_id = module.bigquery.bigquery_dataset.dataset_id
+#   table_id   = "shipment_streaming"
 
-  labels = {
-    env = "default"
-  }
+#   labels = {
+#     env = "default"
+#   }
 
-  schema = <<EOF
-[
-  {
-    "name": "Shipment_ID",
-    "type": "INTEGER",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "ShipmentValue",
-    "type": "FLOAT",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "Created",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "Published",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  }
-]
-EOF
+#   schema = <<EOF
+# [
+#   {
+#     "name": "Shipment_ID",
+#     "type": "INTEGER",
+#     "mode": "NULLABLE"
+#   },
+#   {
+#     "name": "ShipmentValue",
+#     "type": "FLOAT",
+#     "mode": "NULLABLE"
+#   },
+#   {
+#     "name": "Created",
+#     "type": "STRING",
+#     "mode": "NULLABLE"
+#   },
+#   {
+#     "name": "Published",
+#     "type": "STRING",
+#     "mode": "NULLABLE"
+#   }
+# ]
+# EOF
 
-}
+# }
