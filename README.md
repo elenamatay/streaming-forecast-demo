@@ -17,7 +17,8 @@ Below some snippets:
 module "pubsub" {
   source     = "github.com/GoogleCloudPlatform/cloud-foundation-fabric/modules/pubsub"
   project_id = module.main_project.project_id
-  name       = "streaming_data_inbound"
+  name       = var.pubsub_topic_name
+
   subscriptions = {
     streaming_data_inbound_subscription = {
       labels = { env = "dev" }
@@ -32,40 +33,27 @@ module "pubsub" {
   }
 }
 
-resource "google_bigquery_table" "shipment_streaming" {
-  project = module.main_project.project_id
-  dataset_id = module.bigquery.bigquery_dataset.dataset_id
-  table_id   = "shipment_streaming"
+module "bigquery" {
+  source = "github.com/GoogleCloudPlatform/cloud-foundation-fabric/modules/bigquery-dataset"
 
-  labels = {
-    env = "default"
-  }
+  dataset_id   = var.bigquery_dataset_id
+  dataset_name = var.bigquery_dataset_name
+  description  = var.bigquery_dataset_description
+  project_id   = module.main_project.project_id
 
-  schema = <<EOF
-[
-  {
-    "name": "sensor_id",
-    "type": "INTEGER",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "value",
-    "type": "FLOAT",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "ts",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  },
-  {
-    "name": "published",
-    "type": "STRING",
-    "mode": "NULLABLE"
-  }
-]
-EOF
-
+  tables = [
+    {
+      table_id           = var.bigquery_table_id
+      schema             = file(var.bigquery_table_schema_file)
+      time_partitioning  = null
+      range_partitioning = null
+      expiration_time    = null
+      clustering         = []
+      labels = {
+        env = "dev"
+      },
+    }
+  ]
 }
 ```
 
@@ -78,7 +66,7 @@ pip install google-cloud-pubsub
 
 ### 3) Publish data using the script
 ```
-./simulate_streaming_data.py --project whejna-acciona-sandbox --speedFactor=60
+./simulate_streaming_data.py --project $PROJECT --speedFactor=60
 ```
 
 ### 4) See the result using the Dashboard
