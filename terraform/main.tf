@@ -23,7 +23,7 @@ module "pubsub" {
   name       = var.pubsub_topic_name
 
   subscriptions = {
-    streaming_data_inbound_subscription = {
+    streaming_data_inbound_schema_sub = {
       labels = { env = "dev" }
       options = {
         ack_deadline_seconds       = null
