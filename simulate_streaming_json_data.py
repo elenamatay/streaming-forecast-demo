@@ -27,7 +27,7 @@ from google.cloud.pubsub import PublisherClient
 TIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 PROJECT = 'testing-elena'
 TOPIC = 'streaming_data_inbound_schema'
-INPUT = './data/sensors_compressed_2.json.gz'
+INPUT = './data/sensors-test.json'
 avsc_file = "./schema.json" # my JSON schema 
 
 publisher_client = PublisherClient()
