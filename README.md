@@ -59,8 +59,8 @@ module "bigquery" {
 
 ### 2) Install dependencies and use virtual env
 ```bash
-pyenv virtualenv 3.8.13 acciona-streaming
-pyenv activate acciona-streaming
+pyenv virtualenv 3.8.13 my-env
+pyenv activate my-env
 pip install google-cloud-pubsub
 export PROJECT="my-project" 
 ```
