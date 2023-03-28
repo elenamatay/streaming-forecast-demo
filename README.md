@@ -61,7 +61,8 @@ module "bigquery" {
 ```bash
 pyenv virtualenv 3.8.13 acciona-streaming
 pyenv activate acciona-streaming
-pip install google-cloud-pubsub 
+pip install google-cloud-pubsub
+export PROJECT="my-project" 
 ```
 
 ### 3) Publish data using the script
