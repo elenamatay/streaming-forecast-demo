@@ -4,6 +4,7 @@ import logging
 import argparse
 import datetime
 import json
+from dateutil import parser
 
 print("Started Reading JSON file")
 
